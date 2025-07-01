@@ -3,44 +3,125 @@
 <head>
   <meta charset="UTF-8">
   <title>You've Been Hacked</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    :root {
+      --green: #00ff00;
+      --bg: #000000;
+      --red: #ff0000;
+    }
+
     body {
-      background-color: black;
-      color: #00ff00;
+      background-color: var(--bg);
+      color: var(--green);
       font-family: 'Courier New', monospace;
+      margin: 0;
+      padding: 0;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
-      height: 100vh;
-      margin: 0;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+
+    .progress-section {
+      width: 90%;
+      max-width: 400px;
+      margin-bottom: 40px;
+    }
+
+    .progress-title {
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
+
+    .progress-container {
+      width: 100%;
+      background-color: #111;
+      border: 1px solid var(--green);
+      height: 10px;
+      position: relative;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      background-color: var(--green);
+      transition: width 0.1s linear;
+    }
+
+    .progress-text {
+      font-size: 0.9rem;
+      margin-top: 8px;
+      color: var(--green);
     }
 
     h1 {
-      font-size: 3em;
+      font-size: 2.5rem;
       animation: blink 1s step-start infinite;
+      margin: 20px;
+      display: none; /* começa escondido */
     }
 
     #brincadeira {
       display: none;
-      margin-top: 20px;
-      font-size: 1.2em;
-      color: #ff0000;
+      font-size: 1rem;
+      margin-top: 10px;
+      color: var(--red);
     }
 
     @keyframes blink {
       50% { opacity: 0; }
     }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      .progress-title,
+      .progress-text {
+        font-size: 0.85rem;
+      }
+    }
   </style>
 </head>
 <body>
-  <h1>Você foi hackeado!</h1>
+
+  <div class="progress-section">
+    <div class="progress-title">coletando dados...</div>
+    <div class="progress-container">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+    <div class="progress-text" id="progress-text">0%</div>
+  </div>
+
+  <h1 id="hacked-title">Você foi hackeado!</h1>
   <div id="brincadeira">*é brincadeira, pessoal</div>
 
   <script>
-    setTimeout(() => {
-      document.getElementById("brincadeira").style.display = "block";
-    }, 3000);
+    let progress = 0;
+    const progressBar = document.getElementById("progress-bar");
+    const progressText = document.getElementById("progress-text");
+    const hackedTitle = document.getElementById("hacked-title");
+    const brincadeira = document.getElementById("brincadeira");
+
+    const progressInterval = setInterval(() => {
+      if (progress >= 100) {
+        clearInterval(progressInterval);
+
+        // Mostrar "YOU'VE BEEN HACKED" e "*é brincadeira" ao completar 100%
+        hackedTitle.style.display = "block";
+        brincadeira.style.display = "block";
+
+      } else {
+        progress++;
+        progressBar.style.width = progress + "%";
+        progressText.textContent = progress + "%";
+      }
+    }, 20); // duração total: ~2s
   </script>
+
 </body>
 </html>
