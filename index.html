@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <title>You've Been Hacked</title>
@@ -9,6 +9,7 @@
       color: #00ff00;
       font-family: 'Courier New', monospace;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
@@ -20,6 +21,13 @@
       animation: blink 1s step-start infinite;
     }
 
+    #brincadeira {
+      display: none;
+      margin-top: 20px;
+      font-size: 1.2em;
+      color: #ff0000;
+    }
+
     @keyframes blink {
       50% { opacity: 0; }
     }
@@ -27,5 +35,12 @@
 </head>
 <body>
   <h1>YOU'VE BEEN HACKED</h1>
+  <div id="brincadeira">*é brincadeira, pessoal</div>
+
+  <script>
+    setTimeout(() => {
+      document.getElementById("brincadeira").style.display = "block";
+    }, 5000);
+  </script>
 </body>
 </html>
