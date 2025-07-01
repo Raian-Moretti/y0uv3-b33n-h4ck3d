@@ -61,7 +61,7 @@
       font-size: 2.5rem;
       animation: blink 1s step-start infinite;
       margin: 20px;
-      display: none; 
+      display: none;
     }
 
     #brincadeira {
@@ -102,6 +102,7 @@
   <div id="brincadeira">*é brincadeira, pessoal</div>
 
 
+
   <script>
     let progress = 0;
     const progressBar = document.getElementById("progress-bar");
@@ -122,24 +123,33 @@
         progressText.textContent = progress + "%";
       }
     }, 20); // duração total: ~2s
-  function detectDevice() {
+function detectDevice() {
   const ua = navigator.userAgent;
   const platform = navigator.platform || "unknown";
   let device = "Desconhecido";
 
+  // Dispositivos Android
   if (/android/i.test(ua)) {
-    const match = ua.match(/Android\s[\d.]+;\s([^)]+)/);
-    device = match ? match[1] : "Android";
-  } else if (/iPhone|iPad|iPod/i.test(ua)) {
-    const match = ua.match(/\((.*?)\)/);
+    const match = ua.match(/Android.*?;\s(.+?)\sBuild/);
+    device = match ? match[1].trim() : "Android";
+  }
+  // Dispositivos iOS
+  else if (/iPhone|iPad|iPod/i.test(ua)) {
+    const match = ua.match(/\((iPhone|iPad|iPod).*?\)/);
     device = match ? match[1] : "iOS";
-  } else if (/Win/i.test(platform)) {
+  }
+  // Windows
+  else if (/Win/i.test(platform)) {
     if (/Windows NT 10/.test(ua)) device = "Windows 10";
     else if (/Windows NT 6.1/.test(ua)) device = "Windows 7";
     else device = "Windows";
-  } else if (/Mac/i.test(platform)) {
+  }
+  // Mac
+  else if (/Mac/i.test(platform)) {
     device = "macOS";
-  } else if (/Linux/i.test(platform)) {
+  }
+  // Linux
+  else if (/Linux/i.test(platform)) {
     device = "Linux";
   }
 
