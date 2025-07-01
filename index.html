@@ -123,45 +123,65 @@
         progressText.textContent = progress + "%";
       }
     }, 20); // duração total: ~2s
-function detectDevice() {
+
+function detectDevice(callback) {
   const ua = navigator.userAgent;
   const platform = navigator.platform || "unknown";
-  let device = "Desconhecido";
 
-  // Dispositivos Android
-  if (/android/i.test(ua)) {
-    const match = ua.match(/Android.*?;\s(.+?)\sBuild/);
-    device = match ? match[1].trim() : "Android";
-  }
-  // Dispositivos iOS
-  else if (/iPhone|iPad|iPod/i.test(ua)) {
-    const match = ua.match(/\((iPhone|iPad|iPod).*?\)/);
-    device = match ? match[1] : "iOS";
-  }
-  // Windows
-  else if (/Win/i.test(platform)) {
-    if (/Windows NT 10/.test(ua)) device = "Windows 10";
-    else if (/Windows NT 6.1/.test(ua)) device = "Windows 7";
-    else device = "Windows";
-  }
-  // Mac
-  else if (/Mac/i.test(platform)) {
-    device = "macOS";
-  }
-  // Linux
-  else if (/Linux/i.test(platform)) {
-    device = "Linux";
+  // Se estiver em um dispositivo que suporta model (Chrome mobile)
+  if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+    navigator.userAgentData.getHighEntropyValues(["model", "platform", "platformVersion"])
+      .then(uaData => {
+        // Se tiver um model (dispositivo móvel)
+        if (uaData.model && uaData.model !== "") {
+          callback(uaData.model);
+        } else {
+          // Caso desktop: usar fallback
+          let device = "Desconhecido";
+          if (/Windows NT 10/.test(ua)) device = "Windows 10";
+          else if (/Windows NT 6.1/.test(ua)) device = "Windows 7";
+          else if (/Mac/i.test(platform)) device = "macOS";
+          else if (/Linux/i.test(platform)) device = "Linux";
+          else if (/Windows/.test(platform)) device = "Windows";
+          callback(device);
+        }
+      })
+      .catch(() => {
+        // Falha ao usar UAData, usar fallback
+        fallbackDetect(callback);
+      });
+  } else {
+    fallbackDetect(callback);
   }
 
-  return device;
+  function fallbackDetect(callback) {
+    let device = "Desconhecido";
+    if (/Android/i.test(ua)) {
+      const match = ua.match(/Android.*?;\s(.+?)\sBuild/);
+      if (match) device = match[1].trim();
+    } else if (/iPhone|iPad|iPod/i.test(ua)) {
+      const match = ua.match(/\((iPhone|iPad|iPod).*?\)/);
+      device = match ? match[1] : "iOS";
+    } else if (/Windows NT 10/.test(ua)) {
+      device = "Windows 10";
+    } else if (/Windows NT 6.1/.test(ua)) {
+      device = "Windows 7";
+    } else if (/Mac/i.test(platform)) {
+      device = "macOS";
+    } else if (/Linux/i.test(platform)) {
+      device = "Linux";
+    } else if (/Windows/.test(platform)) {
+      device = "Windows";
+    }
+    callback(device);
+  }
 }
-
 setTimeout(() => {
-  const deviceInfo = document.getElementById("device-info");
-  deviceInfo.textContent = "> Dispositivo identificado: " + detectDevice();
-}, 2000); 
-
-
+  detectDevice((device) => {
+    document.getElementById("device-info").textContent =
+      "> Dispositivo identificado: " + device;
+  });
+}, 2000);
   </script>
 
 </body>
