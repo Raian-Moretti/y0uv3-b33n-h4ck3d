@@ -61,7 +61,7 @@
       font-size: 2.5rem;
       animation: blink 1s step-start infinite;
       margin: 20px;
-      display: none; /* começa escondido */
+      display: none; 
     }
 
     #brincadeira {
@@ -99,6 +99,8 @@
 
   <h1 id="hacked-title">Você foi hackeado!</h1>
   <div id="brincadeira">*é brincadeira, pessoal</div>
+  <div id="device-info" style="margin-top: 10px; font-size: 0.9rem;"></div>
+
 
   <script>
     let progress = 0;
@@ -111,7 +113,6 @@
       if (progress >= 100) {
         clearInterval(progressInterval);
 
-        // Mostrar "YOU'VE BEEN HACKED" e "*é brincadeira" ao completar 100%
         hackedTitle.style.display = "block";
         brincadeira.style.display = "block";
 
@@ -121,6 +122,36 @@
         progressText.textContent = progress + "%";
       }
     }, 20); // duração total: ~2s
+  function detectDevice() {
+  const ua = navigator.userAgent;
+  const platform = navigator.platform || "unknown";
+  let device = "Desconhecido";
+
+  if (/android/i.test(ua)) {
+    const match = ua.match(/Android\s[\d.]+;\s([^)]+)/);
+    device = match ? match[1] : "Android";
+  } else if (/iPhone|iPad|iPod/i.test(ua)) {
+    const match = ua.match(/\((.*?)\)/);
+    device = match ? match[1] : "iOS";
+  } else if (/Win/i.test(platform)) {
+    if (/Windows NT 10/.test(ua)) device = "Windows 10";
+    else if (/Windows NT 6.1/.test(ua)) device = "Windows 7";
+    else device = "Windows";
+  } else if (/Mac/i.test(platform)) {
+    device = "macOS";
+  } else if (/Linux/i.test(platform)) {
+    device = "Linux";
+  }
+
+  return device;
+}
+
+setTimeout(() => {
+  const deviceInfo = document.getElementById("device-info");
+  deviceInfo.textContent = "> Dispositivo identificado: " + detectDevice();
+}, 2000); 
+
+
   </script>
 
 </body>
